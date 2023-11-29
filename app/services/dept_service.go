@@ -35,7 +35,7 @@ func (service *DeptService) DeleteDeptById(id string) error {
 	return service.deptRepository.DeleteDeptById(id)
 }
 
-func (service *DeptService) GetDeptList(request *utils.Request) ([]*models.Dept, error) {
+func (service *DeptService) GetDeptList(request *utils.Request) ([]models.Dept, error) {
 	return service.deptRepository.GetDeptList(request)
 }
 

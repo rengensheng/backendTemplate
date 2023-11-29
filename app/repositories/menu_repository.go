@@ -16,7 +16,7 @@ func NewMenuRepository(db *xorm.Engine) *MenuRepository {
 }
 
 func (repo *MenuRepository) CreateMenu(menu *models.Menu) (*models.Menu, error) {
-	if _, err := repo.db.Insert(&menu); err != nil {
+	if _, err := repo.db.Insert(menu); err != nil {
 		return nil, err
 	}
 	return menu, nil
@@ -31,7 +31,7 @@ func (repo *MenuRepository) GetMenuById(id string) (*models.Menu, error) {
 }
 
 func (repo *MenuRepository) UpdateMenuById(id string, menu *models.Menu) (*models.Menu, error) {
-	if _, err := repo.db.ID(id).Update(&menu); err != nil {
+	if _, err := repo.db.ID(id).Update(menu); err != nil {
 		return nil, err
 	}
 	return menu, nil
@@ -39,7 +39,7 @@ func (repo *MenuRepository) UpdateMenuById(id string, menu *models.Menu) (*model
 
 func (repo *MenuRepository) DeleteMenuById(id string) error {
 	menu := &models.Menu{Id: id}
-	if _, err := repo.db.Delete(&menu); err != nil {
+	if _, err := repo.db.Delete(menu); err != nil {
 		return err
 	}
 	return nil
@@ -55,8 +55,8 @@ func (repo *MenuRepository) GetMenuListByIds(ids []string) ([]*models.Menu, erro
 	return menus, nil
 }
 
-func (repo *MenuRepository) GetMenuList(req *utils.Request) ([]*models.Menu, error) {
-	var menuList []*models.Menu
+func (repo *MenuRepository) GetMenuList(req *utils.Request) ([]models.Menu, error) {
+	var menuList []models.Menu
 	req.DisposeRequest(repo.db.NewSession()).Find(&menuList)
 	if err := repo.db.Find(&menuList); err != nil {
 		return nil, err

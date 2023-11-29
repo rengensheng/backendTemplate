@@ -16,7 +16,7 @@ func NewRoleRepository(db *xorm.Engine) *RoleRepository {
 }
 
 func (repo *RoleRepository) CreateRole(role *models.Role) (*models.Role, error) {
-	if _, err := repo.db.Insert(&role); err != nil {
+	if _, err := repo.db.Insert(role); err != nil {
 		return nil, err
 	}
 	return role, nil
@@ -31,7 +31,7 @@ func (repo *RoleRepository) GetRoleById(id string) (*models.Role, error) {
 }
 
 func (repo *RoleRepository) UpdateRoleById(id string, role *models.Role) (*models.Role, error) {
-	if _, err := repo.db.ID(id).Update(&role); err != nil {
+	if _, err := repo.db.ID(id).Update(role); err != nil {
 		return nil, err
 	}
 	return role, nil
@@ -39,15 +39,15 @@ func (repo *RoleRepository) UpdateRoleById(id string, role *models.Role) (*model
 
 func (repo *RoleRepository) DeleteRoleById(id string) error {
 	role := &models.Role{Id: id}
-	if _, err := repo.db.Delete(&role); err != nil {
+	if _, err := repo.db.Delete(role); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (repo *RoleRepository) GetRoleByRoleValues(ids []string) ([]*models.Role, error) {
-	var roles []*models.Role
-	err := repo.db.In("role_value", ids).Desc("id").Find(roles)
+func (repo *RoleRepository) GetRoleByRoleValues(ids []string) ([]models.Role, error) {
+	var roles []models.Role
+	err := repo.db.In("role_value", ids).Desc("id").Find(&roles)
 	if err != nil {
 		golog.Info(err.Error())
 		return nil, err
@@ -55,8 +55,8 @@ func (repo *RoleRepository) GetRoleByRoleValues(ids []string) ([]*models.Role, e
 	return roles, nil
 }
 
-func (repo *RoleRepository) GetRoleList(req *utils.Request) ([]*models.Role, error) {
-	var roleList []*models.Role
+func (repo *RoleRepository) GetRoleList(req *utils.Request) ([]models.Role, error) {
+	var roleList []models.Role
 	req.DisposeRequest(repo.db.NewSession()).Find(&roleList)
 	if err := repo.db.Find(&roleList); err != nil {
 		return nil, err

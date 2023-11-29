@@ -39,7 +39,7 @@ func (service *MenuService) GetMenuListByIds(ids []string) ([]*models.Menu, erro
 	return service.menuRepository.GetMenuListByIds(ids)
 }
 
-func (service *MenuService) GetMenuList(request *utils.Request) ([]*models.Menu, error) {
+func (service *MenuService) GetMenuList(request *utils.Request) ([]models.Menu, error) {
 	return service.menuRepository.GetMenuList(request)
 }
 

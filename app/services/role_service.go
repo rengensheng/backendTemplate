@@ -35,11 +35,11 @@ func (service *RoleService) DeleteRoleById(id string) error {
 	return service.roleRepository.DeleteRoleById(id)
 }
 
-func (service *RoleService) GetRoleByRoleValues(roleValues []string) ([]*models.Role, error) {
+func (service *RoleService) GetRoleByRoleValues(roleValues []string) ([]models.Role, error) {
 	return service.roleRepository.GetRoleByRoleValues(roleValues)
 }
 
-func (service *RoleService) GetRoleList(request *utils.Request) ([]*models.Role, error) {
+func (service *RoleService) GetRoleList(request *utils.Request) ([]models.Role, error) {
 	return service.roleRepository.GetRoleList(request)
 }
 

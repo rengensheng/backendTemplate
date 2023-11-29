@@ -15,7 +15,7 @@ func NewUserRepository(db *xorm.Engine) *UserRepository {
 }
 
 func (repo *UserRepository) CreateUser(user *models.User) (*models.User, error) {
-	if _, err := repo.db.Insert(&user); err != nil {
+	if _, err := repo.db.Insert(user); err != nil {
 		return nil, err
 	}
 	return user, nil
@@ -30,7 +30,7 @@ func (repo *UserRepository) GetUserById(id string) (*models.User, error) {
 }
 
 func (repo *UserRepository) UpdateUserById(id string, user *models.User) (*models.User, error) {
-	if _, err := repo.db.ID(id).Update(&user); err != nil {
+	if _, err := repo.db.ID(id).Update(user); err != nil {
 		return nil, err
 	}
 	return user, nil
@@ -38,14 +38,14 @@ func (repo *UserRepository) UpdateUserById(id string, user *models.User) (*model
 
 func (repo *UserRepository) DeleteUserById(id string) error {
 	user := &models.User{Id: id}
-	if _, err := repo.db.Delete(&user); err != nil {
+	if _, err := repo.db.Delete(user); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (repo *UserRepository) GetUserList(req *utils.Request) ([]*models.User, error) {
-	var userList []*models.User
+func (repo *UserRepository) GetUserList(req *utils.Request) ([]models.User, error) {
+	var userList []models.User
 	req.DisposeRequest(repo.db.NewSession()).Find(&userList)
 	if err := repo.db.Find(&userList); err != nil {
 		return nil, err
@@ -61,8 +61,8 @@ func (repo *UserRepository) GetUserListCount(req *utils.Request) (int64, error) 
 	return total, nil
 }
 
-func (repo *UserRepository) GetUserAll() ([]*models.User, error) {
-	var userList []*models.User
+func (repo *UserRepository) GetUserAll() ([]models.User, error) {
+	var userList []models.User
 	if err := repo.db.Find(&userList); err != nil {
 		return nil, err
 	}

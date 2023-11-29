@@ -15,7 +15,7 @@ func NewDeptRepository(db *xorm.Engine) *DeptRepository {
 }
 
 func (repo *DeptRepository) CreateDept(dept *models.Dept) (*models.Dept, error) {
-	if _, err := repo.db.Insert(&dept); err != nil {
+	if _, err := repo.db.Insert(dept); err != nil {
 		return nil, err
 	}
 	return dept, nil
@@ -30,7 +30,7 @@ func (repo *DeptRepository) GetDeptById(id string) (*models.Dept, error) {
 }
 
 func (repo *DeptRepository) UpdateDeptById(id string, dept *models.Dept) (*models.Dept, error) {
-	if _, err := repo.db.ID(id).Update(&dept); err != nil {
+	if _, err := repo.db.ID(id).Update(dept); err != nil {
 		return nil, err
 	}
 	return dept, nil
@@ -38,14 +38,14 @@ func (repo *DeptRepository) UpdateDeptById(id string, dept *models.Dept) (*model
 
 func (repo *DeptRepository) DeleteDeptById(id string) error {
 	dept := &models.Dept{Id: id}
-	if _, err := repo.db.Delete(&dept); err != nil {
+	if _, err := repo.db.Delete(dept); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (repo *DeptRepository) GetDeptList(req *utils.Request) ([]*models.Dept, error) {
-	var deptList []*models.Dept
+func (repo *DeptRepository) GetDeptList(req *utils.Request) ([]models.Dept, error) {
+	var deptList []models.Dept
 	req.DisposeRequest(repo.db.NewSession()).Find(&deptList)
 	if err := repo.db.Find(&deptList); err != nil {
 		return nil, err

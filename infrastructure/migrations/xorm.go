@@ -2,63 +2,73 @@ package migrations
 
 import (
 	"fmt"
-	"github.com/hyahm/golog"
 	"github.com/rengensheng/backend/app/constant"
 	"github.com/rengensheng/backend/app/models"
 	"github.com/rengensheng/backend/app/repositories"
+	"github.com/rengensheng/backend/app/services"
 	"github.com/rengensheng/backend/app/utils"
-	"os"
+	"log"
 	"xorm.io/xorm"
 )
 
 func Sync(engine *xorm.Engine) {
-	golog.Info(constant.START_SYNC_TABLE)
+	log.Println(constant.START_SYNC_TABLE)
 	err := engine.Sync(new(models.User))
 	if err != nil {
-		golog.Error(constant.START_SYNC_DATA_ERROR, err.Error())
+		log.Println(constant.START_SYNC_DATA_ERROR, err.Error())
 	}
 	err = engine.Sync(new(models.Role))
 	if err != nil {
-		golog.Error(constant.START_SYNC_DATA_ERROR, err.Error())
+		log.Println(constant.START_SYNC_DATA_ERROR, err.Error())
 	}
 	err = engine.Sync(new(models.Dept))
 	if err != nil {
-		golog.Error(constant.START_SYNC_DATA_ERROR, err.Error())
+		log.Println(constant.START_SYNC_DATA_ERROR, err.Error())
 	}
 	err = engine.Sync(new(models.Menu))
 	if err != nil {
-		golog.Error(constant.START_SYNC_DATA_ERROR, err.Error())
+		log.Println(constant.START_SYNC_DATA_ERROR, err.Error())
 	}
 	SyncTableData(engine)
 }
 
 func SyncTableData(engine *xorm.Engine) {
-	golog.Info("同步数据库结构.........")
-	golog.Info("添加默认管理员 admin----123456")
+	log.Println("同步数据库结构.........")
+	log.Println("添加默认管理员 admin----123456")
 	userRepository := repositories.NewUserRepository(engine)
 	// 查询用户表是否有数据，有数据不进行同步
 	total, err := userRepository.GetUserAllCount()
 	if err != nil {
-		golog.Error(err.Error())
-		os.Exit(0)
+		panic(constant.START_SYNC_DATA_ERROR + ":" + err.Error())
 	}
 	if total > 0 {
+		log.Println("用户表已存在数据，不进行同步")
 		return
 	}
 	roleRepository := repositories.NewRoleRepository(engine)
 	deptRepository := repositories.NewDeptRepository(engine)
 	menuRepository := repositories.NewMenuRepository(engine)
+	userService := services.NewUserService(userRepository)
+	roleService := services.NewRoleService(roleRepository)
+	deptService := services.NewDeptService(deptRepository)
+	menuService := services.NewMenuService(menuRepository)
+
 	role := models.Role{
 		RoleName:  "超级管理员",
 		RoleValue: "admin",
 		Status:    "0",
 	}
-	roleRepository.CreateRole(&role)
+	_, err = roleRepository.CreateRole(&role)
+	if err != nil {
+		log.Println("添加默认管理员角色失败", err.Error())
+	} else {
+		log.Println("添加默认管理员角色成功...")
+	}
 	dept := models.Dept{
 		DeptName: "默认部门",
 		Status:   "0",
 	}
-	deptRepository.CreateDept(&dept)
+	deptService.CreateDept(&dept)
 	adminUser := models.User{
 		Account:  "admin",
 		Username: "超级管理员",
@@ -69,11 +79,11 @@ func SyncTableData(engine *xorm.Engine) {
 		Dept:     dept.Id,
 		Email:    "goylord2@gmail.com",
 	}
-	_, err = userRepository.CreateUser(&adminUser)
+	_, err = userService.CreateUser(&adminUser)
 	if err != nil {
-		golog.Info("添加默认管理员账号失败", err.Error())
+		log.Println("添加默认管理员账号失败", err.Error())
 	} else {
-		golog.Info("添加默认管理员账号成功...")
+		log.Println("添加默认管理员账号成功...")
 	}
 	dashboardRootMenu := models.Menu{
 		MenuName:  "仪表盘",
@@ -191,17 +201,17 @@ func SyncTableData(engine *xorm.Engine) {
 		IsExt:      "0",
 		Keepalive:  "0",
 	}
-	menuRepository.CreateMenu(&dashboardRootMenu)
-	menuRepository.CreateMenu(&analysisMenu)
-	menuRepository.CreateMenu(&workbenchMenu)
-	menuRepository.CreateMenu(&systemMenu)
-	menuRepository.CreateMenu(&accountMenu)
-	menuRepository.CreateMenu(&accountDetailMenu)
-	menuRepository.CreateMenu(&roleMenu)
-	menuRepository.CreateMenu(&menuMenu)
-	menuRepository.CreateMenu(&deptMenu)
+	menuService.CreateMenu(&dashboardRootMenu)
+	menuService.CreateMenu(&analysisMenu)
+	menuService.CreateMenu(&workbenchMenu)
+	menuService.CreateMenu(&systemMenu)
+	menuService.CreateMenu(&accountMenu)
+	menuService.CreateMenu(&accountDetailMenu)
+	menuService.CreateMenu(&roleMenu)
+	menuService.CreateMenu(&menuMenu)
+	menuService.CreateMenu(&deptMenu)
 	role.Menu = fmt.Sprintf("%s,%s,%s,%s,%s,%s,%s,%s",
 		dashboardRootMenu.Id, analysisMenu.Id, workbenchMenu.Id,
 		systemMenu.Id, accountMenu.Id, roleMenu.Id, menuMenu.Id, deptMenu.Id)
-	roleRepository.CreateRole(&role)
+	roleService.CreateRole(&role)
 }

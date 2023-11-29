@@ -35,7 +35,7 @@ func (service *UserService) DeleteUserById(id string) error {
 	return service.userRepository.DeleteUserById(id)
 }
 
-func (service *UserService) GetUserList(request *utils.Request) ([]*models.User, error) {
+func (service *UserService) GetUserList(request *utils.Request) ([]models.User, error) {
 	return service.userRepository.GetUserList(request)
 }
 

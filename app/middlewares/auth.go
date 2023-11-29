@@ -10,7 +10,7 @@ import (
 func Auth() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		if strings.HasPrefix(context.Request.URL.String(), "/ws") ||
-			strings.HasPrefix(context.Request.URL.String(), "/api/login") ||
+			strings.HasPrefix(context.Request.URL.String(), "/api/user/login") ||
 			strings.HasPrefix(context.Request.URL.String(), "/api/generator/database") ||
 			strings.HasPrefix(context.Request.URL.String(), "/upload/") ||
 			strings.HasPrefix(context.Request.URL.String(), "/api/public/") {
