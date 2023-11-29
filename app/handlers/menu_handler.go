@@ -17,17 +17,21 @@ func NewMenuHandler(menuService *services.MenuService) *MenuHandler {
 }
 
 func (handler *MenuHandler) CreateMenu(c *gin.Context) {
-	var menu *models.Menu
-	if err := c.ShouldBindJSON(menu); err != nil {
+	var menu models.Menu
+	if err := c.ShouldBindJSON(&menu); err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	menu, err := handler.menuService.CreateMenu(menu)
+	if val, has := c.Get("username"); has {
+		menu.CreatedBy = val.(string)
+		menu.UpdatedBy = val.(string)
+	}
+	menuUp, err := handler.menuService.CreateMenu(&menu)
 	if err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	utils.ResultSuccess(menu, c)
+	utils.ResultSuccess(menuUp, c)
 }
 
 func (handler *MenuHandler) GetMenuById(c *gin.Context) {
@@ -46,6 +50,9 @@ func (handler *MenuHandler) UpdateMenuById(c *gin.Context) {
 	if err := c.ShouldBindJSON(&menu); err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
+	}
+	if val, has := c.Get("username"); has {
+		menu.UpdatedBy = val.(string)
 	}
 	menuUp, err := handler.menuService.UpdateMenuById(id, &menu)
 	if err != nil {

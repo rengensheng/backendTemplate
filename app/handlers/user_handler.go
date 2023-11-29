@@ -21,17 +21,21 @@ func NewUserHandler(userService *services.UserService, roleService *services.Rol
 }
 
 func (handler *UserHandler) CreateUser(c *gin.Context) {
-	var user *models.User
-	if err := c.ShouldBindJSON(user); err != nil {
+	var user models.User
+	if err := c.ShouldBindJSON(&user); err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	user, err := handler.userService.CreateUser(user)
+	if val, has := c.Get("username"); has {
+		user.CreatedBy = val.(string)
+		user.UpdatedBy = val.(string)
+	}
+	userUp, err := handler.userService.CreateUser(&user)
 	if err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	utils.ResultSuccess(user, c)
+	utils.ResultSuccess(userUp, c)
 }
 
 func (handler *UserHandler) GetUserById(c *gin.Context) {
@@ -50,6 +54,9 @@ func (handler *UserHandler) UpdateUserById(c *gin.Context) {
 	if err := c.ShouldBindJSON(&user); err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
+	}
+	if val, has := c.Get("username"); has {
+		user.UpdatedBy = val.(string)
 	}
 	userUp, err := handler.userService.UpdateUserById(id, &user)
 	if err != nil {

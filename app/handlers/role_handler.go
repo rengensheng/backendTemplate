@@ -17,17 +17,21 @@ func NewRoleHandler(roleService *services.RoleService) *RoleHandler {
 }
 
 func (handler *RoleHandler) CreateRole(c *gin.Context) {
-	var role *models.Role
-	if err := c.ShouldBindJSON(role); err != nil {
+	var role models.Role
+	if err := c.ShouldBindJSON(&role); err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	role, err := handler.roleService.CreateRole(role)
+	if val, has := c.Get("username"); has {
+		role.CreatedBy = val.(string)
+		role.UpdatedBy = val.(string)
+	}
+	roleUp, err := handler.roleService.CreateRole(&role)
 	if err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	utils.ResultSuccess(role, c)
+	utils.ResultSuccess(roleUp, c)
 }
 
 func (handler *RoleHandler) GetRoleById(c *gin.Context) {
@@ -46,6 +50,9 @@ func (handler *RoleHandler) UpdateRoleById(c *gin.Context) {
 	if err := c.ShouldBindJSON(&role); err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
+	}
+	if val, has := c.Get("username"); has {
+		role.UpdatedBy = val.(string)
 	}
 	roleUp, err := handler.roleService.UpdateRoleById(id, &role)
 	if err != nil {

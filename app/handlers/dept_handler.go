@@ -17,17 +17,21 @@ func NewDeptHandler(deptService *services.DeptService) *DeptHandler {
 }
 
 func (handler *DeptHandler) CreateDept(c *gin.Context) {
-	var dept *models.Dept
-	if err := c.ShouldBindJSON(dept); err != nil {
+	var dept models.Dept
+	if err := c.ShouldBindJSON(&dept); err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	dept, err := handler.deptService.CreateDept(dept)
+	if val, has := c.Get("username"); has {
+		dept.CreatedBy = val.(string)
+		dept.UpdatedBy = val.(string)
+	}
+	deptUp, err := handler.deptService.CreateDept(&dept)
 	if err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	utils.ResultSuccess(dept, c)
+	utils.ResultSuccess(deptUp, c)
 }
 
 func (handler *DeptHandler) GetDeptById(c *gin.Context) {
@@ -46,6 +50,9 @@ func (handler *DeptHandler) UpdateDeptById(c *gin.Context) {
 	if err := c.ShouldBindJSON(&dept); err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
+	}
+	if val, has := c.Get("username"); has {
+		dept.UpdatedBy = val.(string)
 	}
 	deptUp, err := handler.deptService.UpdateDeptById(id, &dept)
 	if err != nil {

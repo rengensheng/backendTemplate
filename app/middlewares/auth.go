@@ -25,6 +25,7 @@ func Auth() gin.HandlerFunc {
 			})
 			return
 		}
+		context.Set("username", claims.Username)
 		context.Set("claims", claims)
 		context.Next()
 	}
