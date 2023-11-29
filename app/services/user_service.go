@@ -46,3 +46,7 @@ func (service *UserService) GetUserListCount(request *utils.Request) (int64, err
 func (service *UserService) FindByUsernameAndPassword(username string, password string) bool {
 	return service.userRepository.GetUserExistByUsernameAndPassword(username, password)
 }
+
+func (service *UserService) GetUserByUsername(username string) (*models.User, error) {
+	return service.userRepository.GetUserByUsername(username)
+}

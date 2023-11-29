@@ -57,8 +57,8 @@ func (repo *RoleRepository) GetRoleByRoleValues(ids []string) ([]models.Role, er
 
 func (repo *RoleRepository) GetRoleList(req *utils.Request) ([]models.Role, error) {
 	var roleList []models.Role
-	req.DisposeRequest(repo.db.NewSession()).Find(&roleList)
-	if err := repo.db.Find(&roleList); err != nil {
+	err := req.DisposeRequest(repo.db.NewSession()).Find(&roleList)
+	if err != nil {
 		return nil, err
 	}
 	return roleList, nil

@@ -46,8 +46,8 @@ func (repo *DeptRepository) DeleteDeptById(id string) error {
 
 func (repo *DeptRepository) GetDeptList(req *utils.Request) ([]models.Dept, error) {
 	var deptList []models.Dept
-	req.DisposeRequest(repo.db.NewSession()).Find(&deptList)
-	if err := repo.db.Find(&deptList); err != nil {
+	err := req.DisposeRequest(repo.db.NewSession()).Find(&deptList)
+	if err != nil {
 		return nil, err
 	}
 	return deptList, nil

@@ -45,9 +45,9 @@ func (repo *MenuRepository) DeleteMenuById(id string) error {
 	return nil
 }
 
-func (repo *MenuRepository) GetMenuListByIds(ids []string) ([]*models.Menu, error) {
-	var menus []*models.Menu
-	err := repo.db.In("id", ids).Asc("order_no").Find(menus)
+func (repo *MenuRepository) GetMenuListByIds(ids []string) ([]models.Menu, error) {
+	var menus []models.Menu
+	err := repo.db.In("id", ids).Asc("order_no").Find(&menus)
 	if err != nil {
 		golog.Info(err.Error())
 		return nil, err
@@ -57,8 +57,8 @@ func (repo *MenuRepository) GetMenuListByIds(ids []string) ([]*models.Menu, erro
 
 func (repo *MenuRepository) GetMenuList(req *utils.Request) ([]models.Menu, error) {
 	var menuList []models.Menu
-	req.DisposeRequest(repo.db.NewSession()).Find(&menuList)
-	if err := repo.db.Find(&menuList); err != nil {
+	err := req.DisposeRequest(repo.db.NewSession()).Find(&menuList)
+	if err != nil {
 		return nil, err
 	}
 	return menuList, nil

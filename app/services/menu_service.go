@@ -35,7 +35,7 @@ func (service *MenuService) DeleteMenuById(id string) error {
 	return service.menuRepository.DeleteMenuById(id)
 }
 
-func (service *MenuService) GetMenuListByIds(ids []string) ([]*models.Menu, error) {
+func (service *MenuService) GetMenuListByIds(ids []string) ([]models.Menu, error) {
 	return service.menuRepository.GetMenuListByIds(ids)
 }
 

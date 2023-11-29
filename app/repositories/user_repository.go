@@ -46,8 +46,8 @@ func (repo *UserRepository) DeleteUserById(id string) error {
 
 func (repo *UserRepository) GetUserList(req *utils.Request) ([]models.User, error) {
 	var userList []models.User
-	req.DisposeRequest(repo.db.NewSession()).Find(&userList)
-	if err := repo.db.Find(&userList); err != nil {
+	err := req.DisposeRequest(repo.db.NewSession()).Find(&userList)
+	if err != nil {
 		return nil, err
 	}
 	return userList, nil
@@ -87,4 +87,13 @@ func (repo *UserRepository) GetUserExistByUsernameAndPassword(username, password
 		return false
 	}
 	return true
+}
+
+func (repo *UserRepository) GetUserByUsername(username string) (*models.User, error) {
+	var user models.User
+	_, err := repo.db.Where("account = ?", username).Get(&user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

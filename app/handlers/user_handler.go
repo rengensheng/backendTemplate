@@ -80,13 +80,13 @@ func (handler *UserHandler) UserLogin(c *gin.Context) {
 		utils.ResultError(constant.FAILED, constant.USERNAME_PASSWORD_NULL, c)
 		return
 	}
-	user := models.User{}
 	password := utils.MD5(json["password"])
 	isExits := handler.userService.FindByUsernameAndPassword(json["username"], password)
 	if !isExits {
 		utils.ResultError(constant.FAILED, constant.USERNAME_PASSWORD_ERROR, c)
 		return
 	}
+	user, err := handler.userService.GetUserByUsername(json["username"])
 	var permission []string
 	var roleValues []string
 	roles, _ := handler.roleService.GetRoleByRoleValues(strings.Split(user.Role, ","))
@@ -104,7 +104,7 @@ func (handler *UserHandler) UserLogin(c *gin.Context) {
 			}
 		}
 	}
-	token, err := utils.GenerateToken(user, permission, roleValues)
+	token, err := utils.GenerateToken(*user, permission, roleValues)
 	c.SetCookie("token", token, 3600000, "/", "localhost", false, true)
 	userLoginRes := models.UserLoginEntity{
 		Desc:     user.Remark,
