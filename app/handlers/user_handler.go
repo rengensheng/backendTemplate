@@ -46,17 +46,17 @@ func (handler *UserHandler) GetUserById(c *gin.Context) {
 
 func (handler *UserHandler) UpdateUserById(c *gin.Context) {
 	id := c.Param("id")
-	var user *models.User
-	if err := c.ShouldBindJSON(user); err != nil {
+	var user models.User
+	if err := c.ShouldBindJSON(&user); err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	user, err := handler.userService.UpdateUserById(id, user)
+	userUp, err := handler.userService.UpdateUserById(id, &user)
 	if err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	utils.ResultSuccess(user, c)
+	utils.ResultSuccess(userUp, c)
 }
 
 func (handler *UserHandler) DeleteUserById(c *gin.Context) {

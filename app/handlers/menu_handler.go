@@ -42,17 +42,17 @@ func (handler *MenuHandler) GetMenuById(c *gin.Context) {
 
 func (handler *MenuHandler) UpdateMenuById(c *gin.Context) {
 	id := c.Param("id")
-	var menu *models.Menu
-	if err := c.ShouldBindJSON(menu); err != nil {
+	var menu models.Menu
+	if err := c.ShouldBindJSON(&menu); err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	menu, err := handler.menuService.UpdateMenuById(id, menu)
+	menuUp, err := handler.menuService.UpdateMenuById(id, &menu)
 	if err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	utils.ResultSuccess(menu, c)
+	utils.ResultSuccess(menuUp, c)
 }
 
 func (handler *MenuHandler) DeleteMenuById(c *gin.Context) {

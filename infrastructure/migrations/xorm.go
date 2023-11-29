@@ -58,7 +58,6 @@ func SyncTableData(engine *xorm.Engine) {
 		RoleValue: "admin",
 		Status:    "0",
 	}
-	_, err = roleRepository.CreateRole(&role)
 	if err != nil {
 		log.Println("添加默认管理员角色失败", err.Error())
 	} else {

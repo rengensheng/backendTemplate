@@ -42,17 +42,17 @@ func (handler *DeptHandler) GetDeptById(c *gin.Context) {
 
 func (handler *DeptHandler) UpdateDeptById(c *gin.Context) {
 	id := c.Param("id")
-	var dept *models.Dept
-	if err := c.ShouldBindJSON(dept); err != nil {
+	var dept models.Dept
+	if err := c.ShouldBindJSON(&dept); err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	dept, err := handler.deptService.UpdateDeptById(id, dept)
+	deptUp, err := handler.deptService.UpdateDeptById(id, &dept)
 	if err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	utils.ResultSuccess(dept, c)
+	utils.ResultSuccess(deptUp, c)
 }
 
 func (handler *DeptHandler) DeleteDeptById(c *gin.Context) {

@@ -42,17 +42,17 @@ func (handler *RoleHandler) GetRoleById(c *gin.Context) {
 
 func (handler *RoleHandler) UpdateRoleById(c *gin.Context) {
 	id := c.Param("id")
-	var role *models.Role
-	if err := c.ShouldBindJSON(role); err != nil {
+	var role models.Role
+	if err := c.ShouldBindJSON(&role); err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	role, err := handler.roleService.UpdateRoleById(id, role)
+	roleUp, err := handler.roleService.UpdateRoleById(id, &role)
 	if err != nil {
 		utils.ResultError(constant.FAILED, err.Error(), c)
 		return
 	}
-	utils.ResultSuccess(role, c)
+	utils.ResultSuccess(roleUp, c)
 }
 
 func (handler *RoleHandler) DeleteRoleById(c *gin.Context) {
