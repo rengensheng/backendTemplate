@@ -1,0 +1,18 @@
+database:
+  username: "root"
+  pwd: ""
+  driver_name: "mysql"
+  host: "127.0.0.1"
+  port: 3306
+  database_name: "backend"
+  show_sql: false
+  table_schema_name: "information_schema"
+  sync: true
+service:
+  port: 8080
+  upload_dir: "upload"
+log:
+  log_file_path: "/opt/apps/logs"
+  log_file_name: "logger.logger"
+  day: 7
+frontend_path: "/"
