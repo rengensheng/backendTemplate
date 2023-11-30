@@ -8,4 +8,5 @@ import (
 func SetupRoutes(rootRouter *gin.RouterGroup, db *xorm.Engine) {
 	SetupDeptRoute(rootRouter, db)
 	SetupUserRoute(rootRouter, db)
+	SetupWebSocketRouter(rootRouter)
 }

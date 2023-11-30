@@ -62,7 +62,6 @@ func GetPermCode(c *gin.Context) []string {
 func GenerateToken(user models.User, permission, roleValues []string) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(3600000 * time.Second)
-	golog.Info("permission", permission)
 	issuer := user.Account
 	claims := CustomClaims{
 		ID:         user.Id,

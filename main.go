@@ -13,7 +13,7 @@ func main() {
 	if err != nil {
 		panic(constant.LOAD_CONFIG_FILE_ERROR + ":" + err.Error())
 	}
-	logger.InitLogger(appConfig.Log.LogFilePath, appConfig.Log.LogFileName)
+	logger.InitLogger(appConfig.Log.LogFilePath)
 	appInstance = appInstance.Initialize(nil, nil, appConfig)
 	appInstance.SetupRoutes()
 	appInstance.Engine.Run(":8080")

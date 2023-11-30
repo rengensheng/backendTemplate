@@ -7,13 +7,24 @@ import (
 	"strings"
 )
 
+var WhiteList = []string{
+	"/api/user/login",
+	"/api/upload/",
+	"/api/public/",
+	"/api/websocket"}
+
+func isWhiteList(url string) bool {
+	for _, v := range WhiteList {
+		if strings.HasPrefix(url, v) {
+			return true
+		}
+	}
+	return false
+}
+
 func Auth() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		if strings.HasPrefix(context.Request.URL.String(), "/ws") ||
-			strings.HasPrefix(context.Request.URL.String(), "/api/user/login") ||
-			strings.HasPrefix(context.Request.URL.String(), "/api/generator/database") ||
-			strings.HasPrefix(context.Request.URL.String(), "/upload/") ||
-			strings.HasPrefix(context.Request.URL.String(), "/api/public/") {
+		if isWhiteList(context.Request.URL.String()) {
 			context.Next()
 			return
 		}

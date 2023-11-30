@@ -3,7 +3,6 @@ package utils
 import (
 	"strings"
 
-	"github.com/hyahm/golog"
 	"xorm.io/xorm"
 )
 
@@ -47,9 +46,7 @@ func (req *Request) DisposeRequest(session *xorm.Session) *xorm.Session {
 	if req.SortType == "" {
 		req.SortType = "desc"
 	}
-	golog.Info("sort method", req.SortItem, req.SortType)
 	if req.SortType == "desc" {
-		golog.Info("desc")
 		disposedSession = disposedSession.Desc(req.SortItem)
 	} else {
 		disposedSession = disposedSession.Asc(req.SortItem)

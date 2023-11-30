@@ -31,7 +31,7 @@ type Log struct {
 type Config struct {
 	Database     Database `yaml:"database"`
 	Service      Service  `yaml:"service"`
-	Log          Log      `yaml:"logger"`
+	Log          Log      `yaml:"log"`
 	FrontendPath string   `yaml:"frontend_path"`
 }
 
